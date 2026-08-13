@@ -1,399 +1,553 @@
-# 🏠 HomeMate
+<p align="center">
+  <img src="assets/logo.png" alt="HomeMate logo" width="120" />
+</p>
 
-**Smart roommate matching for students moving to Montevideo**
+<h1 align="center">HomeMate</h1>
 
-HomeMate is a mobile application designed to help students find compatible roommates based not only on budget or location, but also on **habits, lifestyle, interests and personal compatibility**.
+<p align="center">
+  <strong>Roommate matching and shared-living management for students moving to Montevideo.</strong>
+</p>
 
-The project was developed as the final degree project for the **Bachelor's Degree in Information Systems at Universidad ORT Uruguay**.
-
-> Finding someone to live with should not be a matter of luck.
+<p align="center">
+  Final Degree Project · Bachelor's Degree in Information Systems · Universidad ORT Uruguay · 2026
+</p>
 
 ---
 
-## About the Project
+## Overview
 
-Moving to a new city to study often means living away from home for the first time and, in many cases, sharing accommodation with people you do not know.
+**HomeMate** is a mobile platform designed to improve the experience of finding a roommate and managing shared living.
 
-Traditional housing platforms mainly focus on properties, price and location. HomeMate approaches the problem from a different perspective:
+The project focuses primarily on students from other regions of Uruguay who move to Montevideo to study — a transition that often involves finding housing, adapting to a new city and deciding who to live with, frequently without an established network of contacts.
 
-**Who would I actually be compatible living with?**
+Existing alternatives tend to focus on property availability, price or informal connections. HomeMate approaches the problem from a different perspective:
 
-The platform was designed around four main pillars:
+> **Finding someone to live with is not enough. The real challenge is finding someone you can live well with.**
 
-* **Smart Matching** — compatibility based on structured and semantic signals.
-* **Housing Discovery** — connecting people with compatible housing needs.
-* **Trust & Safety** — identity verification and transparent profiles.
-* **Community** — a space where users can interact, share experiences and connect.
+The platform combines a **hybrid compatibility engine**, identity verification, direct communication, community features and household-management tools into a single mobile experience.
+
+<p align="center">
+  <img src="assets/product-preview.png" alt="HomeMate product preview" width="850" />
+</p>
+
+---
+
+## The Problem
+
+The project began with a user-centered discovery process aimed at understanding how young people experience shared housing.
+
+Research identified several recurring challenges:
+
+* roommate searches are highly fragmented and often informal;
+* users have limited information to evaluate compatibility before living together;
+* differences in cleanliness, routines, noise, visitors and lifestyle can strongly affect coexistence;
+* trust is a major barrier when interacting with strangers;
+* finding a roommate is only the first step — organizing expenses, tasks and agreements also affects the quality of shared living.
+
+HomeMate was designed to address both stages of the problem:
+
+**finding compatible people** and **supporting the experience after they begin living together**.
+
+---
+
+## Key Features
+
+### Smart Roommate Matching
+
+Users receive a normalized compatibility percentage based on multiple independent signals rather than a single questionnaire or basic profile filters.
+
+### Profiles & Coexistence Questionnaire
+
+Profiles combine personal information, interests, housing preferences, free-text biography and structured questions about everyday coexistence.
+
+### Discover & Swipe
+
+Users can browse potential roommates, apply filters and accept or reject suggested profiles through a mobile-first discovery experience.
+
+### Identity Verification
+
+A verification flow was incorporated to increase trust and reduce uncertainty when users interact with people they do not already know.
+
+### Private Messaging
+
+Users who match can communicate through private one-to-one conversations before making any housing decision.
+
+### Community
+
+A dedicated community space allows users to create posts, comment, exchange recommendations and interact around topics related to moving, housing and student life.
+
+### Shared-Living Management
+
+Once users share a home, the platform provides tools to organize:
+
+* shared expenses;
+* balances;
+* household tasks;
+* household responsibilities.
+
+### Rental Transfers
+
+Users can publish rental-transfer opportunities, browse available listings and contact the person offering the transfer.
+
+---
+
+## Engineering Highlights
+
+* Hybrid roommate recommendation system combining **structured, semantic and behavioral signals**
+* Semantic search using **Vertex AI embeddings + PostgreSQL/pgvector**
+* **Modular monolith** with clear presentation, business and persistence layers
+* Cross-platform mobile application built with **React Native + Expo + TypeScript**
+* REST API built with **ASP.NET Core / .NET**
+* Private object storage using **Amazon S3 + IAM + presigned URLs**
+* Cloud deployment using **DigitalOcean App Platform**
+* Automated quality gates with **GitHub Actions**
+* **≥ 90% backend coverage requirement** enforced before integration
+* Risk-based testing strategy and **k6 load testing**
+* Iterative product validation with real users throughout discovery and development
 
 ---
 
 ## Tech Stack
 
-### Mobile
-
-* React Native
-* Expo
-* TypeScript
-
-### Backend
-
-* C#
-* ASP.NET Core Web API
-* Entity Framework Core
-* JWT Authentication
-
-### Database
-
-* PostgreSQL
-* pgvector
-
-### Matching & AI
-
-* Vertex AI
-* Vector embeddings
-* Cosine similarity
-* Jaccard similarity
-* Weighted compatibility scoring
-
-### Infrastructure
-
-* Docker
-* DigitalOcean App Platform
-* Amazon S3
-* GitHub Actions
+| Area                   | Technologies                                   |
+| ---------------------- | ---------------------------------------------- |
+| **Mobile**             | React Native, Expo, TypeScript                 |
+| **Navigation & State** | React Navigation, TanStack Query, AsyncStorage |
+| **HTTP Client**        | Axios                                          |
+| **Backend**            | C#, .NET, ASP.NET Core Web API                 |
+| **Persistence**        | Entity Framework Core                          |
+| **Database**           | PostgreSQL                                     |
+| **Vector Search**      | pgvector                                       |
+| **AI / Embeddings**    | Google Vertex AI                               |
+| **Authentication**     | JWT, Google OAuth                              |
+| **Object Storage**     | Amazon S3                                      |
+| **Infrastructure**     | Docker, DigitalOcean App Platform              |
+| **Mobile Builds**      | Expo EAS Build                                 |
+| **Beta Distribution**  | TestFlight, Android APK                        |
+| **Testing**            | MSTest, k6                                     |
+| **CI/CD**              | GitHub Actions                                 |
 
 ---
 
 ## Architecture
 
-HomeMate follows a client-server architecture where the mobile application communicates with an ASP.NET Core REST API responsible for business logic, authentication, persistence and the matching process.
+The backend was designed as a **modular monolith**.
 
-```text
-                    ┌─────────────────────────┐
-                    │   React Native + Expo   │
-                    │       Mobile App        │
-                    └────────────┬────────────┘
-                                 │
-                              REST API
-                                 │
-                    ┌────────────▼────────────┐
-                    │     ASP.NET Core API    │
-                    │                         │
-                    │   Business Logic        │
-                    │   Authentication        │
-                    │   Matching Engine       │
-                    │   Community             │
-                    │   Chat                  │
-                    └───────┬─────────┬───────┘
-                            │         │
-                 ┌──────────▼───┐ ┌──▼─────────────┐
-                 │ PostgreSQL   │ │ Cloud Services │
-                 │ + pgvector   │ │                │
-                 │              │ │ Vertex AI      │
-                 │ Relational   │ │ Amazon S3      │
-                 │ + vector data│ │                │
-                 └──────────────┘ └────────────────┘
-```
+Although deployed as a single application, its internal structure separates responsibilities into clearly defined layers and modules, keeping business logic independent from presentation and infrastructure concerns.
 
-PostgreSQL was selected as the main relational database, while **pgvector** allows vector embeddings to coexist with traditional relational information in the same database.
+<p align="center">
+  <img src="assets/architecture.png" alt="HomeMate high-level architecture" width="850" />
+</p>
 
-This makes it possible to combine standard filtering with semantic similarity searches without introducing a separate vector database.
+### Presentation Layer
+
+The mobile client is built with **React Native, Expo and TypeScript**.
+
+Its main responsibility is user interaction and presentation. Communication with the backend is performed through HTTP using Axios, while TanStack Query manages remote state, caching and mutations.
+
+Critical business rules remain on the server rather than being duplicated in the client.
+
+### Business Layer
+
+The backend is implemented as an **ASP.NET Core Web API**.
+
+It centralizes:
+
+* business rules;
+* authentication and authorization;
+* profile management;
+* matching logic;
+* community functionality;
+* messaging;
+* household management;
+* integrations with external services.
+
+### Persistence Layer
+
+Persistence combines:
+
+* **PostgreSQL** for relational application data;
+* **pgvector** for vector storage and similarity search;
+* **Entity Framework Core** for relational mapping and data access;
+* **Amazon S3** for multimedia and document storage.
+
+### Design Patterns
+
+Several patterns were applied to keep responsibilities separated and integrations replaceable:
+
+* **Controller-Service-Repository**
+* **Dependency Injection**
+* **Adapter** for the embedding provider
+* **Singleton** for reusable external-service clients
+
+The embedding provider is abstracted behind an internal contract, allowing the matching engine to remain independent from the specific AI provider used to generate embeddings.
 
 ---
 
 ## Matching Engine
 
-The matching system is one of HomeMate's main technical components.
+The matching system is one of the core technical components of HomeMate.
 
-Rather than calculating compatibility using a single questionnaire or simple predefined rules, the system combines several independent signals to generate a final compatibility score.
+Instead of treating compatibility as a single similarity metric, the engine uses a **multi-stage hybrid pipeline** combining hard constraints, semantic similarity and structured behavioral information.
 
-### Structural Filtering
+<p align="center">
+  <img src="assets/matching-preview.png" alt="HomeMate matching experience" width="900" />
+</p>
 
-The first stage applies objective constraints to determine whether two users are viable candidates.
+### 1. Structural Filtering
 
-Filtering candidates before performing more complex calculations reduces unnecessary processing and ensures that incompatible profiles are excluded early.
+Before calculating similarity, the backend removes candidates that do not satisfy the user's objective requirements.
 
-### Semantic Compatibility
+Filters can include dimensions such as:
 
-Information such as questionnaire responses and user biographies can contain meaning that is difficult to represent using predefined categories.
+* age range;
+* gender;
+* geographic preferences;
+* faculty;
+* department of origin;
+* budget;
+* blocked users;
+* other search preferences.
 
-HomeMate transforms this information into **vector embeddings** using Vertex AI.
+This reduces the candidate space before more expensive ranking operations are executed.
 
-These vectors are stored in PostgreSQL through pgvector and compared to estimate semantic similarity between users.
+### Dealbreakers
 
-```text
-User Information
-      │
-      ▼
-   Vertex AI
-      │
-      ▼
-Vector Embedding
-      │
-      ▼
-PostgreSQL + pgvector
-      │
-      ▼
-Vector Similarity
-```
+Non-negotiable coexistence conditions are also handled at this stage.
 
-### Interests
+A dealbreaker is treated as a **hard constraint**, not as another weighted similarity signal.
 
-Shared interests are evaluated using **Jaccard similarity**, comparing the intersection of both users' interests with their combined set of interests.
+For example, if one user considers smoking inside the home unacceptable, a candidate who requires that behavior should not receive a high compatibility percentage simply because every other dimension matches.
 
-### Habits
-
-Lifestyle and coexistence habits are represented through measurable traits that allow the system to compare characteristics relevant to everyday shared living.
-
-### Final Compatibility Score
-
-The different compatibility channels are combined using configurable weights.
-
-```text
-Structural Filtering
-        │
-        ▼
-Candidate Preselection
-        │
-        ▼
-Compatibility Analysis
-        │
-        ├── Questionnaire Embeddings
-        ├── Biography Embeddings
-        ├── Interests
-        └── Habits
-        │
-        ▼
-Weighted Scoring
-        │
-        ▼
-Compatibility Score
-       0–100%
-```
-
-The approach was designed to provide:
-
-* **Efficiency** by filtering candidates before ranking.
-* **Scalability** by limiting expensive similarity calculations.
-* **Flexibility** through configurable weights.
-* **Robustness** when some profile information is unavailable.
-* **Explainability** through multiple identifiable compatibility dimensions.
+Only viable candidates continue into the ranking process.
 
 ---
 
-## Main Features
+### 2. Semantic Candidate Selection
 
-### User Profiles
+HomeMate generates embeddings from two different sources:
 
-Users create profiles containing information relevant to shared living, including personal information, preferences, habits and interests.
+**Questionnaire embeddings** capture semantic information related to behaviors and coexistence preferences.
 
-This information becomes part of the compatibility analysis performed by the matching engine.
+**Biography embeddings** capture information expressed freely by the user about personality and lifestyle.
 
-### Discover
+Embeddings are generated through **Vertex AI** and stored in PostgreSQL using **pgvector**.
 
-Users can explore potential roommates and see a compatibility percentage calculated from the different matching signals.
+Cosine similarity is used to compare vectors and identify semantically close profiles.
 
-The objective is not simply to recommend people who are similar, but to identify people whose **living preferences may be compatible**.
+Using pgvector allows HomeMate to combine traditional relational persistence and vector search in the same database instead of introducing a separate vector database.
 
-### Community
+---
 
-HomeMate includes a community section where users can:
+### 3. Behavioral Traits
 
-* create publications;
-* comment and reply;
-* like content;
-* bookmark publications;
-* exchange recommendations and experiences.
+Questionnaire answers are also transformed into quantifiable behavioral dimensions called **traits**.
 
-### Private Chat
+Examples include:
 
-Users can communicate through private conversations, allowing potential roommates to get to know each other before making decisions about living together.
+* cleanliness;
+* noise tolerance;
+* visitor policy;
+* other coexistence-related behaviors.
 
-### Identity Verification
+For a shared trait, compatibility is calculated from the normalized distance between both users:
 
-Trust was identified as an important concern during the product research process.
+```text
+traitScore = 1 - (|a - b| / maxDiff)
+```
 
-For this reason, HomeMate includes an identity verification flow designed to increase transparency and confidence between users.
+This produces a continuous score between `0` and `1`.
+
+The approach avoids reducing compatibility to a binary "same / different" decision and preserves interpretability for individual behavioral dimensions.
+
+---
+
+### 4. Interest Similarity
+
+Interests are normalized before comparison and evaluated using **Jaccard similarity**:
+
+```text
+J(A, B) = |A ∩ B| / |A ∪ B|
+```
+
+Jaccard was selected because interests behave naturally as unordered sets and the metric provides an interpretable measure of relative overlap.
+
+---
+
+### 5. Multi-Channel Re-Ranking
+
+The final ranking combines four main channels:
+
+1. questionnaire semantic similarity;
+2. biography semantic similarity;
+3. interest similarity;
+4. behavioral trait similarity.
+
+Each channel has a configurable weight.
+
+```text
+Structural Filters
+       │
+       ▼
+  Dealbreakers
+       │
+       ▼
+Candidate Preselection
+       │
+       ▼
+ ┌─────────────────────────┐
+ │ Questionnaire Embedding │
+ │ Biography Embedding     │
+ │ Interests               │
+ │ Behavioral Traits       │
+ └─────────────────────────┘
+       │
+       ▼
+Weighted Re-Ranking
+       │
+       ▼
+Compatibility Percentage
+      0 - 100%
+```
+
+If a particular compatibility channel is unavailable for a user, the engine can omit that channel instead of failing the entire pipeline.
+
+The weights were informed by the product-discovery research and iteratively adjusted while evaluating whether generated rankings were coherent with expected compatibility between test profiles.
+
+---
+
+## Messaging Design
+
+For private messaging, several alternatives were evaluated, including WebSockets, Server-Sent Events and external realtime platforms.
+
+The selected solution uses **adaptive periodic synchronization through HTTP**.
+
+For the scope of the MVP, messaging did not require strict real-time guarantees. The selected approach provided the necessary interaction while avoiding persistent connections, additional infrastructure and unnecessary operational complexity.
+
+This reflects a broader engineering principle followed throughout the project:
+
+> Choose the simplest architecture that adequately satisfies the real requirement.
+
+---
+
+## File Storage & Security
+
+User-generated media and verification documents are stored separately from the relational database using **Amazon S3**.
+
+Objects remain private and are accessed through **temporary presigned URLs generated by the backend**.
+
+The storage integration follows the principle of least privilege through dedicated IAM permissions.
+
+Additional security practices include:
+
+* JWT-based authentication;
+* hashed password storage;
+* HTTPS/TLS communication;
+* credentials managed outside the source code through environment configuration;
+* server-side authorization and business rules.
 
 ---
 
 ## Product Discovery
 
-HomeMate was developed using a user-centered approach rather than starting directly from a predefined technical solution.
+HomeMate was not built from a predefined list of features.
 
-The discovery process included:
+The project began with an extensive **Product Discovery** process based on Design Thinking.
 
-* surveys with **110 participants**;
-* **14 interviews**;
-* secondary research;
-* competitor benchmarking;
-* user personas;
-* brainstorming;
-* SCAMPER;
-* effort-impact prioritization.
+Research included:
 
-Several recurring problems emerged during the research process:
+* **110 survey participants**
+* **14 in-depth interviews**
+* secondary research
+* analysis of existing platforms
+* user profiles and personas
+* problem-pattern analysis
+* ideation and prioritization
+* multiple prototype iterations
 
-* uncertainty associated with moving away from home;
-* differences in routines and coexistence habits;
-* distrust when considering living with strangers;
-* difficulty evaluating potential roommates beforehand;
-* the importance of compatibility when choosing who to live with.
+Competitor analysis included platforms such as Badi and Roomster.
 
-These findings directly influenced both the product functionality and the design of the matching system.
+While existing products provided useful mechanisms for discovering rooms or roommates, the research identified an opportunity to create a solution more closely adapted to the Uruguayan context and to extend the experience beyond the initial connection between users.
 
 ---
 
-## Validation
+## User Validation
 
-The application was continuously validated throughout the project.
+Validation was performed iteratively rather than only after implementation.
 
-The process included:
+Early prototypes were tested through **Think Aloud sessions**, where participants interacted with the product while explaining their thoughts, doubts and expectations.
 
-* interactive Figma prototypes;
-* Think Aloud sessions;
-* usability testing;
-* validation of functional increments;
-* iterative improvements based on user feedback;
-* testing on real devices;
-* satisfaction and usability surveys.
+Feedback was categorized and weighted according to the participant's relevance to the target segment, then incorporated into subsequent iterations.
 
-Instead of validating the product only after development, feedback was incorporated throughout multiple iterations.
+<p align="center">
+  <img src="assets/user-validation.png" alt="HomeMate user validation analysis" width="900" />
+</p>
 
-This allowed usability issues and incorrect assumptions to be identified earlier in the process.
+Validation continued during development as functional increments became available.
+
+The final beta application was distributed to real users through **TestFlight** on iOS and direct APK distribution on Android.
+
+A final satisfaction and usability survey collected **21 responses**, with average results meeting the project's target of **at least 4 out of 5** for usability and satisfaction criteria.
 
 ---
 
 ## Quality Engineering
 
-Software quality was considered throughout the complete development lifecycle.
+Software quality was addressed throughout the development lifecycle using **ISO/IEC 25010** as a reference for relevant quality attributes.
 
-The project used **ISO/IEC 25010** as a reference framework for defining relevant quality attributes.
+The testing strategy followed a **risk-based approach**: components with greater probability of failure or greater potential impact received more extensive verification.
 
-Development practices included:
+Critical areas included:
 
-* SOLID principles;
-* REST conventions;
-* Clean Code practices;
-* ESLint for the React Native frontend;
-* Definition of Done;
-* Pull Request reviews;
-* automated testing;
-* continuous integration.
+* authentication;
+* user management;
+* user relationships;
+* the compatibility engine.
 
-Different testing strategies were incorporated into the project, including:
+Testing included:
 
-* unit testing;
-* functional testing;
-* integration testing;
+* unit tests;
+* functional tests;
+* integration tests;
+* exploratory testing;
 * usability testing;
 * load testing.
 
-### Automated Testing
+### Unit Testing & Coverage
 
-Backend unit tests were implemented using **MSTest**.
+Backend unit tests were implemented with **MSTest**.
 
-The project established a target of at least **90% unit test coverage**.
+A minimum line-coverage threshold of **90%** was enforced by the CI pipeline. If coverage dropped below the threshold or a test failed, integration was blocked.
 
-### CI/CD
+The final coverage report shown below reached **95% for the main API project** and **98% across the displayed solution**.
 
-GitHub Actions was used to automate validation of the application.
+<p align="center">
+  <img src="assets/test-coverage.png" alt="HomeMate test coverage report" width="850" />
+</p>
+
+---
+
+## Continuous Integration
+
+GitHub Actions automatically executed validation when changes were proposed for integration.
+
+The pipeline included:
 
 ```text
-Push / Pull Request
-        │
-        ▼
-      Build
-        │
-        ▼
-    Run Tests
-        │
-        ▼
+Pull Request
+     │
+     ▼
+Restore Dependencies
+     │
+     ▼
+Build
+     │
+     ▼
+Run Unit Tests
+     │
+     ▼
 Generate Coverage
-        │
-        ▼
-Validate Coverage
-        │
-        ▼
-     Deploy
+     │
+     ▼
+Validate ≥ 90%
+     │
+     ▼
+Allow / Block Integration
 ```
 
-The workflow included automated test execution, coverage validation, Pull Request checks and continuous deployment.
+This converted testing and coverage requirements from informal conventions into automated quality gates.
 
 ---
 
-## Infrastructure
+## Load Testing
 
-### DigitalOcean
+Performance was evaluated using **k6**.
 
-The backend was deployed using **DigitalOcean App Platform**, allowing the team to deploy application changes quickly and maintain an accessible environment for real-user validation.
+### Local environment
 
-### Amazon S3
+The authentication flow was tested with:
 
-Images and documents are stored using Amazon S3 instead of being persisted directly in the relational database.
+* **100 simultaneous virtual users**
+* **600 login requests**
+* **0% failed requests**
+* median latency of approximately **195 ms**
+* p95 latency of approximately **4.92 s**
 
-Temporary URLs are used to control access to stored resources.
+### Cloud environment
 
-This approach separates binary storage from relational information while keeping the backend responsible for access control.
+A progressive-load scenario was also executed against the deployed environment:
 
-### Docker
+* up to **20 concurrent virtual users**
+* **522 login requests**
+* **0% failed requests**
+* median latency of approximately **598 ms**
+* p95 latency of approximately **1.42 s**
 
-Docker was used to provide consistent development environments and reduce dependency and operating-system compatibility issues between team members.
-
----
-
-## Development Process
-
-HomeMate followed an **iterative and incremental development process based on Scrum**.
-
-Development was organized around:
-
-* user stories;
-* a prioritized backlog;
-* two-week sprints;
-* Sprint Planning;
-* reviews;
-* retrospectives;
-* continuous requirement refinement.
-
-Requirements were allowed to evolve as new information emerged from user research and validation.
-
-The project started with an estimated scope of **300 Story Points** and finished with approximately **315 Story Points**, representing a controlled increase in scope during development.
+Both scenarios remained within the performance thresholds defined for their respective tests.
 
 ---
 
-## Project Outcome
+## Deployment & Distribution
 
-The project resulted in a functional MVP integrating the complete product experience, including user management, compatibility analysis, community functionality, communication between users and supporting infrastructure.
+The backend and database were deployed remotely to enable validation outside local development environments.
 
-The final product was validated with real users throughout the development process.
+### Backend
 
-The project also provided practical experience integrating different areas of software engineering:
+**DigitalOcean App Platform** was selected after evaluating different infrastructure approaches.
 
-* product discovery;
-* requirements engineering;
-* mobile development;
-* backend development;
-* database design;
-* recommendation and matching systems;
-* cloud infrastructure;
-* automated testing;
-* CI/CD;
-* usability validation;
-* agile project management.
+The decision prioritized:
+
+* compatibility with .NET and PostgreSQL;
+* operational simplicity;
+* deployment speed;
+* cost;
+* suitability for the project's maturity level.
+
+### Mobile
+
+Native application builds were generated through **Expo EAS Build** for both iOS and Android.
+
+The beta was distributed through:
+
+* **TestFlight** for iOS;
+* installable **APK builds** for Android.
+
+This allowed the MVP to be validated on real devices by users outside the development team.
 
 ---
 
-## Future Work
+## Key Results
 
-Potential next steps identified for HomeMate include:
+| Metric                            |               Result |
+| --------------------------------- | -------------------: |
+| Exploratory survey                | **110 participants** |
+| In-depth interviews               |  **14 participants** |
+| Final beta survey                 |     **21 responses** |
+| Usability target                  | **≥ 4 / 5 achieved** |
+| Required backend coverage         |            **≥ 90%** |
+| Main API coverage in final report |              **95%** |
+| Local load-test failures          |               **0%** |
+| Cloud load-test failures          |               **0%** |
+| Cloud authentication p95          |          **~1.42 s** |
 
-* improving the onboarding experience;
-* further refinement of the matching algorithm;
-* publication on the App Store and Google Play;
-* user acquisition and marketing initiatives;
-* strategic partnerships;
-* additional work related to personal data regulation and compliance.
+---
+
+## Project Status
+
+HomeMate reached a **functional MVP** covering the core product experience:
+
+* profile creation;
+* coexistence questionnaire;
+* hybrid roommate matching;
+* identity verification;
+* private messaging;
+* community;
+* household expenses and tasks;
+* rental-transfer opportunities.
+
+The application was deployed to a remote environment and distributed to beta users on real mobile devices for validation.
+
+Future evolution includes further matching calibration and explainability, onboarding improvements, broader user acquisition and eventual public distribution through the App Store and Google Play.
 
 ---
 
@@ -401,10 +555,10 @@ Potential next steps identified for HomeMate include:
 
 HomeMate was developed by:
 
-* **Lucas Medina**
-* **Martina Roll**
 * **Tiago Abenante**
 * **Franco Cáceres**
+* **Lucas Medina**
+* **Martina Roll**
 
 as the final degree project for the **Bachelor's Degree in Information Systems at Universidad ORT Uruguay**.
 
@@ -414,4 +568,14 @@ as the final degree project for the **Bachelor's Degree in Information Systems a
 
 The application source code is maintained in a **private team repository**.
 
-This public repository serves as a technical case study documenting the product, architecture, engineering decisions, matching strategy, validation process and development practices behind HomeMate.
+This public repository serves as a technical case study of the product and documents its:
+
+* product discovery;
+* architecture;
+* matching strategy;
+* engineering decisions;
+* quality practices;
+* validation process;
+* infrastructure and deployment.
+
+Private source code, secrets and credentials are not included in this repository.
